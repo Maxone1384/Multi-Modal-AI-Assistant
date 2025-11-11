@@ -1,2 +1,7 @@
-def audio_to_text(audio_path):
-    return f"🎙 صدای ورودی در مسیر {audio_path} است (مدل بعداً افزوده می‌شود)"
+import whisper
+
+model = whisper.load_model("base")
+
+def speech_to_text(audio_path):
+    result = model.transcribe(audio_path)
+    return result["text"]

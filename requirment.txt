@@ -1,0 +1,11 @@
+torch
+torchvision
+torchaudio
+transformers
+diffusers
+gradio
+Pillow
+whisper
+gTTS
+librosa
+soundfile
