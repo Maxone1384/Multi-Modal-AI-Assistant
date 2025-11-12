@@ -1,40 +1,21 @@
+from huggingface_hub import InferenceClient
 import gradio as gr
-from transformers import AutoModelForCausalLM, AutoTokenizer
-import torch
 
-# --- Load lightweight model (DistilGPT-2) ---
-model_name = "distilgpt2"
-tokenizer = AutoTokenizer.from_pretrained(model_name)
-model = AutoModelForCausalLM.from_pretrained(model_name)
+client = InferenceClient("mistralai/Mistral-7B-Instruct", token="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")
 
-# --- Chat function ---
 def chat_response(message, history):
     history = history or []
-    prompt = ""
-
-    # Combine chat history for context
-    for user_msg, bot_msg in history:
-        prompt += f"User: {user_msg}\nAI: {bot_msg}\n"
+    prompt = "".join([f"User: {u}\nAI: {b}\n" for u, b in history])
     prompt += f"User: {message}\nAI:"
 
-    # Encode input and generate response
-    inputs = tokenizer.encode(prompt, return_tensors="pt")
-    outputs = model.generate(inputs, max_length=250, pad_token_id=tokenizer.eos_token_id)
-    response = tokenizer.decode(outputs[0], skip_special_tokens=True)
-
-    # Extract only the model’s last answer
-    if "AI:" in response:
-        response = response.split("AI:")[-1].strip()
-
-    history.append((message, response))
+    reply = client.text_generation(prompt, max_new_tokens=200)
+    history.append((message, reply))
     return history, ""
 
-# --- Gradio UI ---
 with gr.Blocks(theme=gr.themes.Soft()) as demo:
-    gr.Markdown("<h2 style='text-align:center; color:#333;'>💬 Smart AI Chat (DistilGPT-2)</h2>")
-
-    chatbot = gr.Chatbot(label="Chat with AI", height=500)
-    msg = gr.Textbox(label="Type your message:", placeholder="Ask me anything...", lines=1)
+    gr.Markdown("<h2 style='text-align:center;'>💬 Chat with Mistral-7B</h2>")
+    chatbot = gr.Chatbot(height=500)
+    msg = gr.Textbox(placeholder="Type your message...", label="Message")
     clear = gr.Button("Clear Chat")
 
     msg.submit(chat_response, [msg, chatbot], [chatbot, msg])
