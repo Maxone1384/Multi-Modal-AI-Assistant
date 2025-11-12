@@ -1,7 +1,7 @@
 from huggingface_hub import InferenceClient
 import gradio as gr
 
-client = InferenceClient("mistralai/Mistral-7B-Instruct", token="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")
+client = InferenceClient("mistralai/Mistral-7B-Instruct", token="")
 
 def chat_response(message, history):
     history = history or []
