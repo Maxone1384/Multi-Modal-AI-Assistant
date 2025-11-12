@@ -2,10 +2,7 @@ torch
 torchvision
 torchaudio
 transformers
-diffusers
 gradio
-Pillow
-whisper
-gTTS
-librosa
-soundfile
+pillow
+openai-whisper
+sqlite-utils
