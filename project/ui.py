@@ -8,6 +8,7 @@ from generative.text_to_image import text_to_image
 def multimodal_interface(image, audio, text, question):
     outputs = {}
     
+    
     if image is not None:
         outputs["Caption"] = generate_caption(image.name)
         if question:
@@ -24,7 +25,7 @@ def multimodal_interface(image, audio, text, question):
 
 iface = gr.Interface(
     fn=multimodal_interface,
-    inputs=[
+    inputs=[ 
         gr.Image(type="file", label="Upload Image"),
         gr.Audio(type="file", label="Upload Audio"),
         gr.Textbox(label="Input Text"),
